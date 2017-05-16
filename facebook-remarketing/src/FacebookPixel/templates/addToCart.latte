@@ -1,0 +1,9 @@
+{if $selector}
+    <script type="text/javascript">
+        $(document).on('click', '#{$selector|noescape}', function () {
+            fbq('track', {$event}{ifset $parameters}, {$parameters|noescape}{/ifset});
+        });
+    </script>
+{else}
+    {include commonEvent.latte}
+{/if}
