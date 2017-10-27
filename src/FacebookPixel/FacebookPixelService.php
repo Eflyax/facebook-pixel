@@ -1,13 +1,13 @@
 <?php
 
-namespace IncolorExtensions\FacebookRemarketing;
+namespace Eflyax\Facebook-pixel;
 
 use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
 /**
  * Class FacebookPixelService
- * @package IncolorExtensions\FacebookRemarketing
+ * @package Eflyax\Facebook-pixel
  * Service for handling events through session
  */
 class FacebookPixelService

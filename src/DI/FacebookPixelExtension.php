@@ -1,15 +1,15 @@
 <?php
 
-namespace IncolorExtensions\FacebookRemarketing\DI;
+namespace Eflyax\Facebook-pixel\DI;
 
-use IncolorExtensions\FacebookRemarketing\FacebookPixel;
-use IncolorExtensions\FacebookRemarketing\FacebookPixelService;
-use IncolorExtensions\FacebookRemarketing\IFacebookPixelFactory;
+use Eflyax\Facebook-pixel\FacebookPixel;
+use Eflyax\Facebook-pixel\FacebookPixelService;
+use Eflyax\Facebook-pixel\IFacebookPixelFactory;
 use Nette;
 
 /**
  * Class FacebookPixelExtension
- * @package IncolorExtensions\FacebookRemarketing\DI
+ * @package Eflyax\Facebook-pixel\DI
  * Main of extension
  */
 class FacebookPixelExtension extends Nette\DI\CompilerExtension

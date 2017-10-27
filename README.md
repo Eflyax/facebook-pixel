@@ -5,7 +5,7 @@ V **extensions.neon** přidáme *facebookPixel*
 
 ```
 extensions:
-    facebookPixel: IncolorExtensions\FacebookRemarketing\DI\FacebookPixelExtension
+    facebookPixel: Eflyax\Facebook-pixel\DI\FacebookPixelExtension
 ```
 
 A konfiguraci:

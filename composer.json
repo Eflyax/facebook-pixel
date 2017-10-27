@@ -1,20 +1,23 @@
 {
-    "name": "incolor-extensions/facebook-remarketing",
-    "type": "library",
-    "authors": [
-        {
-            "name": "Jakub Záruba",
-            "email": "jakub.zaruba@incolor.cz"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-        "php": ">= 5.3.7",
-        "nette/application": "~2.3.0|~2.4.0",
-        "nette/bootstrap": "~2.3.0|~2.4.0",
-        "nette/di": "~2.3.0|~2.4.0"
-    },
-    "autoload":{
-        "classmap": ["src/"]
+  "name": "eflyax/facebook-pixel",
+  "type": "library",
+  "description": "Facebook pixel for Nette",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Jakub Záruba",
+      "email": "info@jakub-zaruba.cz"
     }
+  ],
+  "require": {
+    "php": ">= 5.3.7",
+    "nette/application": "~2.3.0|~2.4.0",
+    "nette/bootstrap": "~2.3.0|~2.4.0",
+    "nette/di": "~2.3.0|~2.4.0"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace IncolorExtensions\FacebookRemarketing;
+namespace Eflyax\Facebook-pixel;
 
 use Nette\Application\UI\Control;
 
 /**
  * Class FacebookPixel
- * @package IncolorExtensions\FacebookRemarketing
+ * @package Eflyax\Facebook-pixel
  * Main class of FacebookPixel control
  */
 class FacebookPixel extends Control

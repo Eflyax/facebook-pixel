@@ -1,10 +1,10 @@
 <?php
 
-namespace IncolorExtensions\FacebookRemarketing;
+namespace Eflyax\Facebook-pixel;
 
 /**
  * Interface IFacebookPixelFactory
- * @package IncolorExtensions\FacebookRemarketing
+ * @package Eflyax\Facebook-pixel
  * Interface for FacebookPixelFactory
  */
 interface IFacebookPixelFactory
