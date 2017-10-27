@@ -1,73 +1,86 @@
 #Nette extension for Facebook Pixel.
 
-# Registrace rozšíření
-V **extensions.neon** přidáme *facebookPixel*
+## Requirements
 
+- [Nette/Application](https://github.com/nette/application)
+
+## Installation
+
+The best way to install Eflyax/Facebook-pixel is using  [Composer](http://getcomposer.org/):
+
+```sh
+$ composer require eflyax/facebook-pixel
+```
+
+## Usage
+
+### Preparation
+#### Extension registration
+Add to your neon config:
 ```
 extensions:
     facebookPixel: Eflyax\FacebookPixel\DI\FacebookPixelExtension
 ```
-
-A konfiguraci:
+and configuration with you FB pixel ID:
 ```
 facebookPixel:
     id: '111122223333444'
-```
-Id musí být v podobě stringu
+    productIdPrefix: '42' // optional
+``` 
 
-# Integrace do projektu
+Be careful you add FB pixel ID as string, there was issues with integer
 
-## Registrace  továrničky pro komponentu
+#### Backend
 
-V modulu (případně BasePresenteru), kde chceme kód generovat si vstříkneme továrničku:
-
-```
-  /** @var IFacebookPixelFactory @inject */
-    public $facebook_pixel_factory;
-```
-
-k tomu také metodu na vytvoření komponenty:
+Inject FB pixel factory and service to your module where you want to render FB pixel. FB pixel service
+will help you to render specific events.
 
 ```
+abstract class BaseFrontPresenter extends BasePresenter
+{
+
+    /** @var IFacebookPixelFactory @inject */
+    public $facebookPixelFactory;
+    
+    /** @var FacebookPixelService @inject */
+    public $facebookPixelService;
+    
+    .
+    .
+    
     protected function createComponentFacebookPixel()
     {
-        return $this->facebook_pixel_factory->create();
+        return $this->facebookPixelFactory->create();
     }
+    
+}
 ```
+#### Frontend
 
-Nyní můžeme v layoutu webu vykreslit základní komponentu, která provede odesílání výchozí události pageView a umožní používat ostaní události jako viewContent, Puchase, AddToCart, apod..
+Now you are ready to render basic FB pixel for event PageView. Render control faceboobPixel in layout
 
 `{control facebookPixel}`
 
-# Událost AddToCart
-Rozšíření podporuje jak odesílání produktu do košíku přes ajax, tak vložení do košíku s novým načtením stránky.
 
-## Vložení do košíku přes ajaxový požadavek
+### Events
 
-```
-{control facebookPixel:addToCart,
-    $product->getId(),
-    $product->getTitle(),
-    $product->getDescription(),
-    $product->getPrice(),
-    $currency->getCode(),
-    '#buttonAddToCart'
-}
-```
-Poslední parametr provede bindování na tlačítko (událost onClick). Lze ho nabindovat jak na tlačítko s třídou **.buttonAddToCart** tak na tlačítko s identifikátorem **#buttonAddToCart**
+#### AddToCart
 
-## Vložení košíku s přechodem na novou stránku
+##### Backend
+In method where you add product to cart call eventStart like this:
 
-V presenteru, kde probíhá vkládání do košíku si vstříkneme službu   **FacebookPixelService**:
-```
- /** @var FacebookPixelService @inject */
-    public $facebookPixelService;
-```
-V metodě, kde proběhlo vložení do košíku je potřeba komponentu zaktivovat:
+````
+    public function actionAddProduct($idProduct, $quantity = 1)
+    {
+        ...
+        $this->facebookPixelService->eventStart(FacebookPixelService::EVENT_ADD_TO_CART);
+    }
 
-`        $this->facebookPixelService->eventStart(FacebookPixelService::EVENT_ADD_TO_CART);`
+````
 
-Na stránce, kam proběhlo přesměrování vykreslíme komponentu:
+##### Frontend
+This control is rendered only if you call eventStart addToCart on backend. When you render this control event is automatically deactivated
+ 
 ```
 {control facebookPixel:addToCart,
     $product->getId(),
@@ -77,36 +90,30 @@ Na stránce, kam proběhlo přesměrování vykreslíme komponentu:
     $currency->getCode()
 }
 ```
-Při vykreslení se komponenta sama deaktivuje, při znovunačtení stránky se nevykreslí, je nutné opět vložit produkt do košíku, čímž proběhne nová aktivace.
 
+#### Purchase
 
-# Událost Purchase
-
-Rozšíření podporuje odesílání jednoho či více zakoupených produktů. Při odeslání objednávky je potřeba zaktivovat komponentu pro odeslání této události.
-V Presenteru, kde probíhá odesálíní objednávky si vstříkneme službu **FacebookPixelService**:
-```
-    /** @var FacebookPixelService @inject */
-    public $facebookPixelService;
-```
-Následně v metodě kde probíhá odesílání objednávky provedeme aktivaci komponenty:
+##### Backend
+Before you redirect customer on thank you page call startEvent:
 
 `$this->facebookPixelService->eventStart(FacebookPixelService::EVENT_PURCHASE);`
 
-Na stránce, kam nás odeslání objednávky přesměrovalo vykreslíme komponentu:
+##### Frontend
+
 ```
 {control facebookPixel:purchase,
-    $cartTotal,
+    $totalPrice,
     $currency->getCode(),
-    $item_ids
+    $itemIds
 }
 ```
-`$item_ids` může být ID jednoho produktu, nebo pole ID více produktů 
+
+`$itemIds` can contains id for one or more products 
 
 
-# Událost ViewContent
-Na stránce zobrazující jeden či více produktů vykreslíme komponentu:
-
-## Pro jeden produkt
+#### ViewContent
+##### Frontend
+For one product:
 ```
 {control facebookPixel:viewContent,
     $product->getId(),
@@ -116,14 +123,14 @@ Na stránce zobrazující jeden či více produktů vykreslíme komponentu:
     $currency->getCode()
 }
 ```
-
-## Pro více produktů pošleme parametrem pole s ID produktů
+For more products (category):
 ```
 {control facebookPixel:viewContent,
     $productIds
 }
 ```
 
-# Validace událostí
+## Events validation
 
-Pro validaci událostí je vhodné rozšíření do prohlížeče [Facebook Pixel Helper](https://chrome.google.com/webstore/detail/FacebookPixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc)
+If you want to validate events sended to facebook I can recommend this browser plugin: 
+[Facebook Pixel Helper](https://chrome.google.com/webstore/detail/FacebookPixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc)
