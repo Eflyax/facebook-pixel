@@ -17,11 +17,9 @@ class FacebookPixelExtension extends Nette\DI\CompilerExtension
 
     public $defaults = [
         'id' => '<PIXEL_ID>',
+        'productIdPrefix' => '',
     ];
 
-    /**
-     * Loads configuration from neon
-     */
     public function loadConfiguration()
     {
         $config = $this->validateConfig($this->defaults);
@@ -30,11 +28,14 @@ class FacebookPixelExtension extends Nette\DI\CompilerExtension
         $builder->addDefinition($this->prefix('facebookPixel'))
             ->setClass(FacebookPixel::class)
             ->setImplement(IFacebookPixelFactory::class)
-            ->setArguments(['id' => $config['id']]);
-
+            ->setArguments([
+                'id' => $config['id'],
+                'productIdPrefix' => $config['productIdPrefix'],
+            ]);
 
         $builder->addDefinition($this->prefix('facebookPixelService'))
             ->setClass(FacebookPixelService::class);
     }
 
 }
+

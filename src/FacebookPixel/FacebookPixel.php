@@ -4,35 +4,32 @@ namespace Eflyax\FacebookPixel;
 
 use Nette\Application\UI\Control;
 
-/**
- * Class FacebookPixel
- * @package Eflyax\FacebookPixel
- * Main class of FacebookPixel control
- */
 class FacebookPixel extends Control
 {
 
-    /** @var String */
+    /** @var string */
     private $facebookId;
 
     /** @var FacebookPixelService */
     private $facebookPixelService;
 
+    /** @var string */
+    private $productIdPrefix;
+
     /**
      * FacebookPixel constructor.
-     * @param String $id
+     * @param string $id
      * @param FacebookPixelService $facebookPixelService
+     * @param $productIdPrefix
      */
-    public function __construct($id, FacebookPixelService $facebookPixelService)
+    public function __construct($id, FacebookPixelService $facebookPixelService, $productIdPrefix = '')
     {
         parent::__construct();
         $this->facebookId = $id;
         $this->facebookPixelService = $facebookPixelService;
+        $this->productIdPrefix = $productIdPrefix;
     }
 
-    /**
-     * Render code for event pageView
-     */
     public function render()
     {
         $this->template->id = $this->facebookId;
@@ -40,15 +37,6 @@ class FacebookPixel extends Control
         $this->template->render();
     }
 
-    /**
-     * Render code for event viewContent
-     * @param int|int[] $contentIds
-     * @param String $contentName
-     * @param String $contentCategory
-     * @param float $value
-     * @param String $currency
-     * @return String
-     */
     public function renderViewContent(
         $contentIds,
         $contentName = null,
@@ -64,15 +52,6 @@ class FacebookPixel extends Control
         $this->template->render(__DIR__ . '/templates/commonEvent.latte');
     }
 
-    /**
-     * Render code for event addToCart
-     * @param int|int[] $contentIds
-     * @param String $contentName
-     * @param String $contentCategory
-     * @param float $value
-     * @param String $currency
-     * @param String $selector
-     */
     public function renderAddToCart(
         $contentIds,
         $contentName = null,
@@ -82,8 +61,8 @@ class FacebookPixel extends Control
         $selector = null
     )
     {
-        // Do nothing if both event "add to cart" and selector are null
         if (!$this->facebookPixelService->eventStatus(FacebookPixelService::EVENT_ADD_TO_CART) && !$selector) {
+
             return;
         }
         $this->template->selector = $selector;
@@ -97,21 +76,28 @@ class FacebookPixel extends Control
         }
     }
 
-    /**
-     * Render code for event purchase on successful payment
-     * @param String $value Total value of purchase
-     * @param String $currency
-     * @param int|int[] $contentIds
-     */
     public function renderPurchase($value, $currency, $contentIds = null)
     {
         if (!$this->facebookPixelService->eventStatus(FacebookPixelService::EVENT_PURCHASE)) {
+
             return;
         }
-        $parameters['value'] = $value;
-        $parameters['currency'] = $currency;
-        $parameters['content_type'] = count($contentIds) > 1 ? 'product_group' : 'product';
-        $parameters['content_ids'] = $contentIds;
+        if ($value) {
+            $parameters['value'] = $this->formatPrice($value);
+        }
+        if ($currency) {
+            $parameters['currency'] = "'{$currency}'";
+        }
+        if (!is_array($contentIds)) {
+            $contentIds = [$contentIds];
+        }
+        $idsWithPrefix = [];
+        foreach ($contentIds as $id) {
+            $idsWithPrefix[] = $this->productIdPrefix . $id;
+        }
+        $idsWithPrefix = array_map('strval', $idsWithPrefix);
+        $parameters['content_type'] = count($idsWithPrefix) > 1 ? 'product_group' : 'product';
+        $parameters['content_ids'] = $idsWithPrefix;
         $this->template->parameters = json_encode($parameters);
         $this->template->event = FacebookPixelService::EVENT_PURCHASE;
         $this->template->render(__DIR__ . '/templates/commonEvent.latte');
@@ -119,13 +105,12 @@ class FacebookPixel extends Control
     }
 
     /**
-     * Prepare products information for template
      * @param int|int[] $contentIds
-     * @param String $contentName
-     * @param String $contentCategory
+     * @param string $contentName
+     * @param string $contentCategory
      * @param float $value
-     * @param String $currency
-     * @return String
+     * @param string $currency
+     * @return string
      */
     private function prepareProductsToParameters(
         $contentIds,
@@ -134,14 +119,36 @@ class FacebookPixel extends Control
         $value = null,
         $currency = null)
     {
-        $parameters['content_type'] = count($contentIds) > 1 ? 'product_group' : 'product';
-        $parameters['content_ids'] = $contentIds;
+        if (!is_array($contentIds)) {
+            $contentIds = [$contentIds];
+        }
+        $idsWithPrefix = [];
+        foreach ($contentIds as $id) {
+            $idsWithPrefix[] = $this->productIdPrefix . $id;
+        }
+        $idsWithPrefix = array_map('strval', $idsWithPrefix);
+        $parameters['content_type'] = count($idsWithPrefix) > 1 ? 'product_group' : 'product';
+        $parameters['content_ids'] = $idsWithPrefix;
         $parameters['content_name'] = $contentName;
         $parameters['content_category'] = $contentCategory ? $contentCategory : null;
-        $parameters['value'] = $value ? $value : null;
-        $parameters['currency'] = $currency ? $currency : null;
+        $parameters['value'] = $value ? $this->formatPrice($value) : null;
+        $parameters['currency'] = $currency ? "'{$currency}'" : null;
+
+        foreach ($parameters as $key => $value) {
+            if (!$value) {
+                unset($parameters[$key]);
+            }
+        }
 
         return json_encode($parameters);
+    }
+
+    private function formatPrice($value)
+    {
+        $value = str_replace(' ', '', $value);
+        $value = str_replace(',', '.', $value);
+
+        return number_format($value, 2, '.', '');
     }
 
 }
