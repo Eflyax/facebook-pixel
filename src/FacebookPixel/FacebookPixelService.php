@@ -1,13 +1,13 @@
 <?php
 
-namespace Eflyax\Facebook-pixel;
+namespace Eflyax\FacebookPixel;
 
 use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
 /**
  * Class FacebookPixelService
- * @package Eflyax\Facebook-pixel
+ * @package Eflyax\FacebookPixel
  * Service for handling events through session
  */
 class FacebookPixelService

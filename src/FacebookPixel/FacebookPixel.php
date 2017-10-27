@@ -1,12 +1,12 @@
 <?php
 
-namespace Eflyax\Facebook-pixel;
+namespace Eflyax\FacebookPixel;
 
 use Nette\Application\UI\Control;
 
 /**
  * Class FacebookPixel
- * @package Eflyax\Facebook-pixel
+ * @package Eflyax\FacebookPixel
  * Main class of FacebookPixel control
  */
 class FacebookPixel extends Control

@@ -5,7 +5,7 @@ V **extensions.neon** přidáme *facebookPixel*
 
 ```
 extensions:
-    facebookPixel: Eflyax\Facebook-pixel\DI\FacebookPixelExtension
+    facebookPixel: Eflyax\FacebookPixel\DI\FacebookPixelExtension
 ```
 
 A konfiguraci:
@@ -126,4 +126,4 @@ Na stránce zobrazující jeden či více produktů vykreslíme komponentu:
 
 # Validace událostí
 
-Pro validaci událostí je vhodné rozšíření do prohlížeče [Facebook Pixel Helper](https://chrome.google.com/webstore/detail/facebook-pixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc)
+Pro validaci událostí je vhodné rozšíření do prohlížeče [Facebook Pixel Helper](https://chrome.google.com/webstore/detail/FacebookPixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc)

@@ -1,10 +1,10 @@
 <?php
 
-namespace Eflyax\Facebook-pixel;
+namespace Eflyax\FacebookPixel;
 
 /**
  * Interface IFacebookPixelFactory
- * @package Eflyax\Facebook-pixel
+ * @package Eflyax\FacebookPixel
  * Interface for FacebookPixelFactory
  */
 interface IFacebookPixelFactory

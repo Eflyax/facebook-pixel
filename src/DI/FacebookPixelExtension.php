@@ -1,15 +1,15 @@
 <?php
 
-namespace Eflyax\Facebook-pixel\DI;
+namespace Eflyax\FacebookPixel\DI;
 
-use Eflyax\Facebook-pixel\FacebookPixel;
-use Eflyax\Facebook-pixel\FacebookPixelService;
-use Eflyax\Facebook-pixel\IFacebookPixelFactory;
+use Eflyax\FacebookPixel\FacebookPixel;
+use Eflyax\FacebookPixel\FacebookPixelService;
+use Eflyax\FacebookPixel\IFacebookPixelFactory;
 use Nette;
 
 /**
  * Class FacebookPixelExtension
- * @package Eflyax\Facebook-pixel\DI
+ * @package Eflyax\FacebookPixel\DI
  * Main of extension
  */
 class FacebookPixelExtension extends Nette\DI\CompilerExtension
