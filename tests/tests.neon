@@ -1,0 +1,2 @@
+extensions:
+	recaptcha: Eflyax\FacebookPixel\DI\FacebookPixelExtension

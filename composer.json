@@ -13,7 +13,13 @@
     "php": ">= 5.3.7",
     "nette/application": "~2.3.0|~2.4.0",
     "nette/bootstrap": "~2.3.0|~2.4.0",
-    "nette/di": "~2.3.0|~2.4.0"
+    "nette/di": "~2.3.0|~2.4.0",
+    "mrtnzlml/testbench": "^2.4"
+  },
+  "require-dev": {
+    "nette/tester": "@dev",
+    "nette/bootstrap": "^2.4@dev",
+    "nette/robot-loader": "^3.0"
   },
   "autoload": {
     "classmap": [
