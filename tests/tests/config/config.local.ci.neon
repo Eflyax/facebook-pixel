@@ -1,0 +1,14 @@
+doctrine:
+  host: mysql
+  user: test
+  password: test
+  dbname: test
+  metadata:
+    App: %appDir%
+
+database:
+  dsn: 'mysql:host=mysql;dbname=test'
+  user: test
+  password: test
+  options:
+    lazy: yes

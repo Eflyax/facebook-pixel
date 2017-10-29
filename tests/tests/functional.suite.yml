@@ -1,0 +1,15 @@
+error_level: "E_ALL"
+class_name: FunctionalSuiteTester
+modules:
+    enabled:
+        - Asserts
+        - Arachne\Codeception\Module\NetteApplicationModule
+        - Arachne\Codeception\Module\NetteDIModule:
+            tempDir: ../_temp/functional
+            configFiles:
+                # Your application config file.
+                - ../../app/config/config.neon
+                - ../../app/config/config.local.neon
+                # Additional config file only to add Arachne\Codeception\DI\HttpExtension.
+                - config/config.neon
+            logDir: ../_log

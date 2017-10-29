@@ -1,0 +1,8 @@
+vendor
+composer.lock
+temp
+!temp/.gitignore
+log
+tests/_temp
+tests/_log
+tests/_helpers

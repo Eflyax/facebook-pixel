@@ -1,0 +1,19 @@
+{block content}
+
+{control facebookPixel:viewContent,
+    $product->id,
+    $product->title,
+    $product->description,
+    $product->price,
+    $currencyCode
+}
+
+{control facebookPixel:addToCart,
+    $product->id,
+    $product->title,
+    $product->description,
+    $product->price,
+    $currencyCode
+}
+
+<a n:href="addToCart">Add to cart</a>

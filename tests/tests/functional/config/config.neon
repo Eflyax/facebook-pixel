@@ -1,0 +1,5 @@
+extensions:
+    codeception: Arachne\Codeception\DI\HttpExtension
+
+console:
+    disabled: true

@@ -134,3 +134,14 @@ For more products (category):
 
 If you want to validate events sended to facebook I can recommend this browser plugin: 
 [Facebook Pixel Helper](https://chrome.google.com/webstore/detail/FacebookPixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc)
+
+
+## How to run tests
+```
+$ cd tests
+$ composer install
+$ ./vendor/bin/codecept build
+$ ./vendor/bin/codecept run
+```
+
+
