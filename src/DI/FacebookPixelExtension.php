@@ -38,4 +38,3 @@ class FacebookPixelExtension extends Nette\DI\CompilerExtension
     }
 
 }
-
