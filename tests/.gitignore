@@ -1,8 +1,9 @@
 vendor
 composer.lock
 temp
-!temp/.gitignore
+!temp/cache/.htaccess
 log
+!log/.htaccess
 tests/_temp
 tests/_log
 tests/_helpers

@@ -13,10 +13,6 @@ use Nette\Http\SessionSection;
 class FacebookPixelService
 {
 
-    const EVENT_VIEW_CONTENT = 'ViewContent',
-        EVENT_PURCHASE = 'Purchase',
-        EVENT_ADD_TO_CART = 'AddToCart';
-
     /** @var SessionSection */
     private $sessionSection;
 
@@ -30,31 +26,31 @@ class FacebookPixelService
     }
 
     /**
-     * Activates given event
-     * @param String $eventName
+     * Save special events to session
+     * @param String[] $eventName
+     * @param String[] $eventContent
      */
-    public function eventStart($eventName)
+    public function saveEvent($eventName, $eventContent)
     {
-        $this->sessionSection->$eventName = true;
+        $this->sessionSection->$eventName = serialize($eventContent);
+
     }
 
     /**
-     * Deactivates given event
-     * @param String $eventName
-     */
-    public function eventEnd($eventName)
-    {
-        unset($this->sessionSection->$eventName);
-    }
-
-    /**
-     * Gets status of given event
      * @param String $eventName
      * @return String
      */
-    public function eventStatus($eventName)
+    public function getEventContent($eventName)
     {
-        return $this->sessionSection->$eventName;
+        return unserialize($this->sessionSection->$eventName);
+    }
+
+    /**
+     * @param String $eventName
+     */
+    public function removeEvent($eventName)
+    {
+        $this->sessionSection->$eventName = null;
     }
 
 }

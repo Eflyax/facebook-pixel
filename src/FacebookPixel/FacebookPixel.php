@@ -7,6 +7,16 @@ use Nette\Application\UI\Control;
 class FacebookPixel extends Control
 {
 
+    const EVENT_VIEW_CONTENT = 'ViewContent',
+        EVENT_PURCHASE = 'Purchase',
+        EVENT_ADD_TO_CART = 'AddToCart';
+
+    private $sessionEvents = [
+        self::EVENT_ADD_TO_CART,
+        self::EVENT_VIEW_CONTENT,
+        self::EVENT_PURCHASE,
+    ];
+
     /** @var string */
     private $facebookId;
 
@@ -33,11 +43,17 @@ class FacebookPixel extends Control
     public function render()
     {
         $this->template->id = $this->facebookId;
+        $events = [];
+        foreach ($this->sessionEvents as $sessionEvent) {
+            $events[] = $this->facebookPixelService->getEventContent($sessionEvent);
+        }
+        $this->template->specialEvents = $events;
         $this->template->setFile(__DIR__ . '/templates/facebookPixel.latte');
         $this->template->render();
+        $this->clearEventsFromSession();
     }
 
-    public function renderViewContent(
+    public function viewContent(
         $contentIds,
         $contentName = null,
         $contentCategory = null,
@@ -45,63 +61,49 @@ class FacebookPixel extends Control
         $currency = null
     )
     {
-        $this->template->parameters =
-            $this->prepareProductsToParameters($contentIds, $contentName, $contentCategory, $value, $currency);
-        $this->template->event = FacebookPixelService::EVENT_VIEW_CONTENT;
-        $this->template->id = $this->facebookId;
-        $this->template->render(__DIR__ . '/templates/commonEvent.latte');
+        $this->sendEventToOutput(
+            self::EVENT_VIEW_CONTENT,
+            $this->prepareProductsToParameters(
+                $contentIds,
+                $contentName,
+                $contentCategory,
+                $value,
+                $currency
+            )
+        );
     }
 
-    public function renderAddToCart(
+    public function addToCart(
         $contentIds,
         $contentName = null,
         $contentCategory = null,
         $value = null,
-        $currency = null,
-        $selector = null
+        $currency = null
     )
     {
-        if (!$this->facebookPixelService->eventStatus(FacebookPixelService::EVENT_ADD_TO_CART) && !$selector) {
-
-            return;
-        }
-        $this->template->selector = $selector;
-        $this->template->id = $this->facebookId;
-        $this->template->event = FacebookPixelService::EVENT_ADD_TO_CART;
-        $this->template->parameters =
-            $this->prepareProductsToParameters($contentIds, $contentName, $contentCategory, $value, $currency);
-        $this->template->render(__DIR__ . '/templates/addToCart.latte');
-        if (!$selector) {
-            $this->facebookPixelService->eventEnd(FacebookPixelService::EVENT_ADD_TO_CART);
-        }
+        $this->sendEventToOutput(
+            self::EVENT_ADD_TO_CART,
+            $this->prepareProductsToParameters($contentIds, $contentName, $contentCategory, $value, $currency)
+        );
     }
 
-    public function renderPurchase($value, $currency, $contentIds = null)
+    public function purchase($value, $currency, $contentIds = null)
     {
-        if (!$this->facebookPixelService->eventStatus(FacebookPixelService::EVENT_PURCHASE)) {
+        $this->sendEventToOutput(
+            self::EVENT_PURCHASE,
+            $this->prepareProductsToParameters($contentIds, null, null, $value, $currency)
+        );
+    }
 
-            return;
+    private function sendEventToOutput($event, $eventParameters)
+    {
+        $output = "fbq('track', '" . $event . "'";
+        if (isset($eventParameters)) {
+            $output .= ', ' . $eventParameters;
         }
-        if ($value) {
-            $parameters['value'] = $this->formatPrice($value);
-        }
-        if ($currency) {
-            $parameters['currency'] = "'{$currency}'";
-        }
-        if (!is_array($contentIds)) {
-            $contentIds = [$contentIds];
-        }
-        $idsWithPrefix = [];
-        foreach ($contentIds as $id) {
-            $idsWithPrefix[] = $this->productIdPrefix . $id;
-        }
-        $idsWithPrefix = array_map('strval', $idsWithPrefix);
-        $parameters['content_type'] = count($idsWithPrefix) > 1 ? 'product_group' : 'product';
-        $parameters['content_ids'] = $idsWithPrefix;
-        $this->template->parameters = json_encode($parameters);
-        $this->template->event = FacebookPixelService::EVENT_PURCHASE;
-        $this->template->render(__DIR__ . '/templates/commonEvent.latte');
-        $this->facebookPixelService->eventEnd(FacebookPixelService::EVENT_PURCHASE);
+        $output .= ");";
+        $output = str_replace('"', "'", $output);
+        $this->facebookPixelService->saveEvent($event, $output);
     }
 
     /**
@@ -132,7 +134,7 @@ class FacebookPixel extends Control
         $parameters['content_name'] = $contentName;
         $parameters['content_category'] = $contentCategory ? $contentCategory : null;
         $parameters['value'] = $value ? $this->formatPrice($value) : null;
-        $parameters['currency'] = $currency ? "'{$currency}'" : null;
+        $parameters['currency'] = $currency ?: null;
 
         foreach ($parameters as $key => $value) {
             if (!$value) {
@@ -149,6 +151,13 @@ class FacebookPixel extends Control
         $value = str_replace(',', '.', $value);
 
         return number_format($value, 2, '.', '');
+    }
+
+    private function clearEventsFromSession()
+    {
+        foreach ($this->sessionEvents as $sessionEvent) {
+            $this->facebookPixelService->removeEvent($sessionEvent);
+        }
     }
 
 }
