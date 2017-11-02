@@ -82,7 +82,7 @@ class FacebookPixel extends Control
     )
     {
         $this->sendEventToOutput(
-            $this->template->event = self::EVENT_ADD_TO_CART,
+            self::EVENT_ADD_TO_CART,
             $this->prepareProductsToParameters($contentIds, $contentName, $contentCategory, $value, $currency)
         );
     }
@@ -90,7 +90,7 @@ class FacebookPixel extends Control
     public function purchase($value, $currency, $contentIds = null)
     {
         $this->sendEventToOutput(
-            $this->template->event = self::EVENT_PURCHASE,
+            self::EVENT_PURCHASE,
             $this->prepareProductsToParameters($contentIds, null, null, $value, $currency)
         );
     }
