@@ -26,7 +26,7 @@ class FacebookPixelExtension extends Nette\DI\CompilerExtension
         $builder = $this->getContainerBuilder();
 
         $builder->addDefinition($this->prefix('facebookPixel'))
-            ->setClass(FacebookPixel::class)
+            ->setType(FacebookPixel::class)
             ->setImplement(IFacebookPixelFactory::class)
             ->setArguments([
                 'id' => $config['id'],
@@ -34,7 +34,7 @@ class FacebookPixelExtension extends Nette\DI\CompilerExtension
             ]);
 
         $builder->addDefinition($this->prefix('facebookPixelService'))
-            ->setClass(FacebookPixelService::class);
+            ->setType(FacebookPixelService::class);
     }
 
 }
