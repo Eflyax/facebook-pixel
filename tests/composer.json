@@ -24,6 +24,6 @@
     "tracy/tracy": "^2.4",
     "arachne/codeception": "^0.7.6",
     "kdyby/console": "^2.7",
-    "eflyax/facebook-pixel": "^1.0"
+    "eflyax/facebook-pixel": "^2.1"
   }
 }

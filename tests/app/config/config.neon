@@ -12,6 +12,7 @@ session:
 
 services:
     router: App\Router\RouterFactory::createRouter
+    - App\Model\ProductRepository
 
 facebookPixel:
     id: '111111111111111'

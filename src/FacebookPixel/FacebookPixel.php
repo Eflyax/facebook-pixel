@@ -14,7 +14,8 @@ class FacebookPixel extends Control
         EVENT_LEAD = 'Lead',
         EVENT_COMPLETE_REGISTRATION = 'CompleteRegistration',
         EVENT_INITIATE_CHECKOUT = 'InitiateCheckout',
-        EVENT_ADD_TO_CART = 'AddToCart';
+        EVENT_ADD_TO_CART = 'AddToCart',
+        EVENT_PAGE_VIEW = 'PageView';
 
     private $sessionEvents = [
         self::EVENT_ADD_TO_CART,
@@ -158,7 +159,19 @@ class FacebookPixel extends Control
         $numItems = null
     )
     {
-
+        $this->sendEventToOutput(
+            self::EVENT_INITIATE_CHECKOUT,
+            $this->prepareProductsToParameters(
+                $contentIds,
+                $contentName,
+                $contentCategory,
+                $value,
+                $currency,
+                $contents,
+                null,
+                $numItems
+            )
+        );
     }
 
     /**
@@ -203,7 +216,7 @@ class FacebookPixel extends Control
     public function lead($value = null, $currency = null, $contentName = null, $contentCategory = null)
     {
         $this->sendEventToOutput(
-            self::EVENT_SEARCH,
+            self::EVENT_LEAD,
             $this->prepareProductsToParameters(
                 null,
                 $contentName,
@@ -266,6 +279,7 @@ class FacebookPixel extends Control
      * @param string $currency
      * @param string $contents
      * @param null $searchString
+     * @param null $numberOfItems
      * @return string
      */
     private function prepareProductsToParameters(
@@ -275,7 +289,8 @@ class FacebookPixel extends Control
         $value = null,
         $currency = null,
         $contents = null,
-        $searchString = null
+        $searchString = null,
+        $numberOfItems = null
     )
     {
         if (!is_array($contentIds)) {
@@ -294,6 +309,7 @@ class FacebookPixel extends Control
         $parameters['currency'] = $currency ?: null;
         $parameters['contents'] = $contents ?: null;
         $parameters['search_string'] = $searchString ?: null;
+        $parameters['num_items'] = $numberOfItems ?: null;
 
         foreach ($parameters as $key => $value) {
             if (!$value) {
