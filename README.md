@@ -1,7 +1,6 @@
 # Nette extension for Facebook Pixel.
 
 TODO
-* implement missing events (search, addToWishList, etc..)
 * support for ajax
 
 ## Requirements
